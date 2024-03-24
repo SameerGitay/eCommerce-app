@@ -1,7 +1,18 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const Header = () => {
+    const [auth, setAuth] = useAuth()
+
+    const handleLogout = (e) => {
+        setAuth({
+            ...auth,
+            user: null,
+            token: ""
+        })
+        localStorage.removeItem('auth')
+    }
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,12 +31,34 @@ const Header = () => {
                             <li className="nav-item">
                                 <NavLink to="/category" className="nav-link " aria-current="page" >Category</NavLink>
                             </li>
-                            <li className="nav-item">
-                                <NavLink to="/register" className="nav-link" >Register</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/login" className="nav-link" >Login</NavLink>
-                            </li>
+                            {!auth.user ?
+                                (<>
+                                    <li className="nav-item">
+                                        <NavLink to="/register" className="nav-link" >Register</NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/login" className="nav-link" >Login</NavLink>
+                                    </li>
+                                </>)
+                                : (
+                                    <>
+                                        <li class="nav-item dropdown">
+                                            <NavLink className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                {auth?.user.firstName}
+                                            </NavLink>
+                                            <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><NavLink className="dropdown-item" to="/dashboard">Dashboard</NavLink></li>
+                                                <li><hr className="dropdown-divider" /></li>
+                                                <li className="dropdown-item">
+                                                    <NavLink to="/login" onClick={handleLogout} className="nav-link" >Logout</NavLink>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                    </>
+                                )
+                            }
+
                             <li className="nav-item">
                                 <NavLink to="/cart" className="nav-link" >Cart</NavLink>
                             </li>

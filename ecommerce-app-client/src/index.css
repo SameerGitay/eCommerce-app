@@ -107,14 +107,3 @@
 }
 
 /* Contact us page */
-
-
-/* Register page */
-.register{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 70vh;
-  flex-direction: column;
-}
-/* Register page */
