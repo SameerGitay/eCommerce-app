@@ -1,5 +1,6 @@
 import mongoose, { model } from 'mongoose'
 
+
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -31,6 +32,19 @@ const userSchema = new mongoose.Schema({
     role: {
         type: Number,
         default: 0
+    },
+    secret: {
+        question: {
+            type: String,
+            enum: ['what is my school name',
+                'what is my best friend name',
+                'what is my favourite movie name'],
+            required: true
+        },
+        answer: {
+            type: String,
+            required: true
+        }
     }
 }, { timestamps: true })
 

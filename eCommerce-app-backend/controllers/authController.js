@@ -15,13 +15,9 @@ export const registerController = async (req, res) => {
             console.log(errors.array())
             res.status(400).json({ success: false, msg: "Error registering user" })
         } else {
-            const { firstName, lastName, email, password, address, phoneNumber } = req.body
-
-            console.log("Received ", password)
+            const { firstName, lastName, email, password, address, phoneNumber, secret } = req.body
 
             const hashedPassword = await hashPassword(password)
-
-            console.log("Received ", hashedPassword)
 
             const user = await userModel.create({
                 firstName,
@@ -29,17 +25,19 @@ export const registerController = async (req, res) => {
                 email,
                 password: hashedPassword,
                 address,
-                phoneNumber
+                phoneNumber,
+                secret
             })
 
             user.password = undefined
             user._id = undefined
+            user.secret = undefined
 
             res.json({ success: true, data: user })
         }
     } catch (error) {
         console.log(`Error registering user. Error ${error}`.bgRed.white)
-        res.status(500).json({ success: false, msg: "Error registering user" })
+        res.status(500).json({ success: false, msg: "Something went wrong" })
     }
 }
 
@@ -66,12 +64,69 @@ export const loginController = async (req, res) => {
 
                 user.password = undefined
                 user._id = undefined
+                user.secret = undefined
 
                 res.json({ success: true, token, data: user })
             }
         }
     } catch (error) {
         console.log(`Error in login. Error ${error}`.bgRed.white)
-        res.status(500).json({ success: false, msg: "Error in login" })
+        res.status(500).json({ success: false, msg: "Something went wrong" })
+    }
+}
+
+export const secretOptionsController = (req, res) => {
+    const secretQuestions = ['what is my school name',
+        'what is my best friend name',
+        'what is my favourite movie name']
+    res.json({ success: true, data: secretQuestions })
+}
+
+export const forgotPasswordController = async (req, res) => {
+    try {
+
+        const errors = validationResult(req)
+
+        console.log(errors)
+
+        if (!errors.isEmpty()) {
+            console.log(errors.array())
+            res.status(400).json({ success: false, msg: "Error reseting password" })
+        } else {
+            const { email, password, question, answer } = req.body
+
+
+            console.log(JSON.stringify(req.body))
+
+            const user = await userModel.findOne({ email })
+
+            if (!user) {
+                console.log("USER NOT FOUND ", email)
+                res.status(400).json({ success: true, msg: 'Error reseting password' })
+            } else {
+
+                if ((question !== user.secret.question) || (answer !== user.secret.answer)) {
+                    console.log(`Question mismatch expected: ${user.secret.question} received: ${question}`)
+                    console.log(`Answer mismatch expected: ${user.secret.answer} received: ${answer}`)
+
+                    res.status(400).json({ success: true, msg: 'Error reseting password' })
+                } else {
+                    const hashedPassword = await hashPassword(password)
+
+                    const updatedUser = await userModel.findByIdAndUpdate(user._id,
+                        { password: hashedPassword })
+
+                    if (updatedUser) {
+                        res.json({ success: true, msg: "Password reset successfully" })
+                    } else {
+                        res.status(400).json({ success: false, msg: "Error reseting password" })
+                    }
+                }
+            }
+        }
+
+    } catch (error) {
+        console.log(`Error in forgot password. Error ${error}`.bgRed.white)
+        res.status(500).json({ success: false, msg: "Something went wrong" })
     }
 }
