@@ -10,7 +10,6 @@
     "server": "nodemon server.js",
     "client": "npm start --prefix ../ecommerce-app-client",
     "both": "concurrently \"npm run server\" \"npm run client\""
-    
   },
   "keywords": [],
   "author": "",
@@ -22,9 +21,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^5.0.0-beta.2",
+    "express-formidable": "^1.2.0",
     "express-validator": "^7.0.1",
+    "formidable": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "slugify": "^1.6.6"
   }
 }

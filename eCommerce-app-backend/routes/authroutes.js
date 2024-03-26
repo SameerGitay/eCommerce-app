@@ -10,7 +10,7 @@ import {
     validateForgotPassword
 } from '../helpers/validator.js'
 
-import { requireSignIn } from '../middlewares/authMiddleware.js'
+import { isAdmin, requireSignIn } from '../middlewares/authMiddleware.js'
 
 const authRoutes = express.Router()
 
@@ -33,4 +33,10 @@ authRoutes.post('/forgot-password',
 authRoutes.get('/user-auth', requireSignIn, (req, res) => {
     res.json({ success: true })
 })
+
+authRoutes.get('/admin-auth', requireSignIn, isAdmin,(req, res) => {
+    res.json({ success: true })
+})
+
+
 export default authRoutes
