@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import Layout from '../components/Layout/Layout'
 import toast from 'react-hot-toast'
@@ -13,10 +13,15 @@ import styles from '../styles/AuthStyles.module.css'
 const Login = () => {
     const navigate = useNavigate()
     const location = useLocation()
+    const emailRef = useRef()
     // const authContext = useContext(AuthContext)
     const [auth, setAuth] = useAuth()
 
     const [userDetails, setUserDetails] = useState({ email: "", password: "" })
+
+    useEffect(() => {
+        emailRef.current.focus()
+    }, [])
 
     const handleChange = (e) => {
         setUserDetails({ ...userDetails, [e.target.name]: e.target.value })
@@ -85,6 +90,7 @@ const Login = () => {
                             placeholder='Email address'
                             onChange={handleChange}
                             value={userDetails.email}
+                            ref={emailRef}
                         />
                         <label htmlFor="exampleInputEmail">Email address</label>
                     </div>
