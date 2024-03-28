@@ -69,6 +69,7 @@ export const createProductController = async (req, res) => {
           .json({ success: false, msg: "photo is Required and should be less then 1mb" });
     }
 
+    console.log("creating photo")
     const products = new productModel({ ...req.fields, slug: slugify(name) });
     if (photo) {
       products.photo.data = fs.readFileSync(photo.path);

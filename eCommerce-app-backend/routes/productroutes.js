@@ -3,6 +3,7 @@ import formidableMiddleware from "express-formidable";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 import {
   createProductController,
+  updateProductController,
   productController,
   singleProductController,
   productPhotoController,
@@ -29,6 +30,14 @@ productRoutes.delete("/",
   requireSignIn,
   isAdmin,
   deleteProductController);
+
+productRoutes.put(
+  "/update-product/:pid",
+  requireSignIn,
+  isAdmin,
+  formidableMiddleware(),
+  updateProductController
+);
 
 productRoutes.post(
   "/",
